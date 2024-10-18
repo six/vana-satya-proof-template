@@ -1,7 +1,6 @@
 import my_proof.utils.constants as constants 
 from my_proof.utils.defs import is_valid_url
 import math
-import hashlib
 
 def sigmoid(x, k=constants.K, x0=constants.X0):
     """

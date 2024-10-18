@@ -4,8 +4,6 @@ import os
 from typing import Dict, Any
 from eth_account import Account
 from eth_account.messages import encode_defunct
-import eth_utils
-import hashlib
 import base64
 from my_proof.utils.decrypt import decryptData, verifyDataHash
 from my_proof.models.proof_response import ProofResponse
