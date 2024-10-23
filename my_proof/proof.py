@@ -29,10 +29,9 @@ class Proof:
         # Load and decrypt the input data
         input_data = self.load_input_data()
         print("input_data :{}".format(input_data))
-        decrypted_data = self.decrypt_input_data(input_data)
 
         # Create the proof response
-        proof_response = self.create_proof_response(input_data, decrypted_data)
+        proof_response = self.create_proof_response(input_data)
 
         return proof_response
 
@@ -42,35 +41,17 @@ class Proof:
         json_files = [
             f for f in os.listdir(input_dir) if f.lower().endswith('.json')
         ]
-
         if not json_files:
             raise FileNotFoundError("No JSON input files found in the input directory.")
-
         if len(json_files) > 1:
             logging.warning("Multiple JSON input files found. Using the first one.")
-
         input_file = os.path.join(input_dir, json_files[0])
-
         with open(input_file, 'r') as f:
             input_data = json.load(f)
-
         return input_data
 
-    def decrypt_input_data(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Decrypt the input data using the provided encryption key."""
-        encrypted_data = input_data.get('encrypted_data')
-        iv = input_data.get('iv')
-        signed_message = self.config.get("signed_message")
-
-        if not all([encrypted_data, iv, signed_message]):
-            raise ValueError("Missing encryption data or key in input data.")
-        
-        decrypted_data = decryptData(encrypted_data, iv, signed_message)
-        print("here is the decrypted_data :",decrypted_data)
-        return decrypted_data
-
     def create_proof_response(
-        self, input_data: Dict[str, Any], decrypted_data: Dict[str, Any]
+        self, input_data: Dict[str, Any]
     ) -> ProofResponse:
         """Create and populate the ProofResponse object."""
         proof_response = ProofResponse(dlp_id=self.config['dlp_id'])
@@ -81,14 +62,14 @@ class Proof:
             random_string=input_data.get('random_string'),
         )
         #Verify user honesty 
-        given_metrics = decrypted_data.get('evaluationMetrics', {})
+        given_metrics = input_data.get('data', {}).get('evaluationMetrics', {})
         print("given_metrics:",given_metrics)
-        recalculated_metrics = recalculate_evaluation_metrics(decrypted_data)
+        recalculated_metrics = recalculate_evaluation_metrics(input_data.get('data', {}))
         honesty = verify_evaluation_metrics(recalculated_metrics, given_metrics)
-        data_integrity = verifyDataHash(decrypted_data,input_data['data_hash'])
+        data_integrity = verifyDataHash(input_data.get('data', {}),input_data['data_hash'])
         proof_response.honesty = honesty and data_integrity
        # Evaluate browsing data
-        evaluation_result = self.evaluate_browsing_data(decrypted_data)
+        evaluation_result = self.evaluate_browsing_data(input_data.get('data', {}))
         quality = evaluation_result['quality_score']        # Raw quality score
         authenticity = evaluation_result['authenticity_score']  # Raw authenticity score
         final_score = evaluation_result['overall_score']      # Final score after sigmoid
@@ -125,7 +106,7 @@ class Proof:
         
         
         # Step 1: Decode the Base64 string to bytes
-        message_bytes = base64.b64decode(random_string)
+        message_bytes = bytes.fromhex(random_string)
         message = encode_defunct(message_bytes)
         try:
             recovered_address = Account.recover_message(message, signature=signature)
