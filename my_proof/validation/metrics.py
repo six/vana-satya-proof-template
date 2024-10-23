@@ -34,7 +34,7 @@ def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
         total_cookies += cookies_count
     
     # Calculate points: (URL count + total actions) * 10 + total time spent + total cookies
-    points = math.floor((url_count + total_actions) * 10 + total_time_spent + total_cookies)
+    points = math.floor((url_count + total_actions) + total_time_spent/60)
     
     calculated_metrics = {
         'url_count': url_count,
