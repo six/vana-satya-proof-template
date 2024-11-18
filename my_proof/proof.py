@@ -90,31 +90,46 @@ class Proof:
         proof_response.metadata = {'dlp_id': self.config['dlp_id']}
 
         return proof_response
-
+    
+    
     def verify_ownership(
         self, author: str, signature: str, random_string: str
     ) -> float:
         """Verify the ownership of the data."""
-        missing_fields = [field_name for field_name, value in {
-            'author': author,
-            'signature': signature,
-            'random_string': random_string
-        }.items() if not value]
+        # Step 0: Validate Input Fields
+        missing_fields = [
+            field_name for field_name, value in {
+                'author': author,
+                'signature': signature,
+                'random_string': random_string
+            }.items() if not value
+        ]
         if missing_fields:
             logging.error(f"Missing ownership verification data: {', '.join(missing_fields)}")
             return 0.0
-        
-        
-        # Step 1: Decode the Base64 string to bytes
-        message_bytes = bytes.fromhex(random_string)
-        message = encode_defunct(message_bytes)
+
+        # Step 1: Encode the Message as Defunct (Treat as Text)
         try:
-            recovered_address = Account.recover_message(message, signature=signature)
-            
-            return 1.0 if recovered_address.lower() == author.lower() else 0.0
+            # Since the client signs the hex string, treat random_string as text
+            message_encoded = encode_defunct(text=random_string)
+        except Exception as e:
+            logging.error(f"Failed to encode message: {e}")
+            return 0.0
+
+        # Step 2: Recover the Signer's Address from the Signature
+        try:
+            recovered_address = Account.recover_message(message_encoded, signature=signature)
+            # Compare the recovered address with the provided author address (case-insensitive)
+            is_valid = 1.0 if recovered_address.lower() == author.lower() else 0.0
+            if is_valid:
+                logging.info(f"Ownership verified successfully for address: {recovered_address}")
+            else:
+                logging.warning(f"Recovered address {recovered_address} does not match author {author}")
+            return is_valid
         except Exception as e:
             logging.error(f"Ownership verification failed: {e}")
             return 0.0
+    
 
     def evaluate_browsing_data(self, browsing_data: Dict[str, Any]) -> Dict[str, Any]:
         """Evaluate the browsing data for quality and authenticity."""
