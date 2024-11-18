@@ -39,7 +39,7 @@ class Proof:
         """Load the input data from a JSON file in the input directory."""
         input_dir = self.config['input_dir']
         json_files = [
-            f for f in os.listdir(input_dir) if f.lower().endswith('.json')
+            f for f in os.listdir(input_dir) if f.lower().endswith('.zip')
         ]
         if not json_files:
             raise FileNotFoundError("No JSON input files found in the input directory.")

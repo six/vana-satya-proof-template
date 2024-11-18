@@ -1,4 +1,3 @@
-loader.debug_type = 1  # Enable debug logs
 # Adjust this as needed.
 sgx.enclave_size = "256M"
 
