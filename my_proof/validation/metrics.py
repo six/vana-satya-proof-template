@@ -3,6 +3,8 @@ from typing import Dict
 
 import math
 
+EARLY_BONUS_MULTIPLIER = 6
+
 def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
     encrypted_browsing_data_array = decrypted_data.get('browsingDataArray', [])
     
@@ -34,7 +36,7 @@ def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
         total_cookies += cookies_count
     
     # Calculate points: (URL count + total actions) * 10 + total time spent + total cookies
-    points = math.floor((url_count + total_actions) + total_time_spent/60)
+    points = math.floor(((url_count + total_actions) + total_time_spent/60) * EARLY_BONUS_MULTIPLIER)
     
     calculated_metrics = {
         'url_count': url_count,
