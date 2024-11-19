@@ -25,11 +25,8 @@ class Proof:
     def generate(self) -> ProofResponse:
         """Generate the proof response based on the input data."""
         logging.info("Starting proof generation")
-
         # Load and decrypt the input data
         input_data = self.load_input_data()
-        print("input_data :{}".format(input_data))
-
         # Create the proof response
         proof_response = self.create_proof_response(input_data)
 
@@ -63,7 +60,6 @@ class Proof:
         )
         #Verify user honesty 
         given_metrics = input_data.get('data', {}).get('evaluationMetrics', {})
-        print("given_metrics:",given_metrics)
         recalculated_metrics = recalculate_evaluation_metrics(input_data.get('data', {}))
         honesty = verify_evaluation_metrics(recalculated_metrics, given_metrics)
         data_integrity = verifyDataHash(input_data.get('data', {}),input_data['data_hash'])
@@ -87,7 +83,12 @@ class Proof:
         proof_response.valid = (
             proof_response.ownership == 1.0 and proof_response.honesty and proof_response.score >= (constants.MODERATE_QUALITY_THRESHOLD/100)
         )
-        proof_response.metadata = {'dlp_id': self.config['dlp_id']}
+        proof_response.metadata = {
+            'dlp_id': self.config['dlp_id'],
+            'label': label,
+            'points': recalculated_metrics.get('points', 0),
+            'cookies': sum(recalculated_metrics.get('cookies', [])),
+            }
 
         return proof_response
     

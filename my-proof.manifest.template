@@ -7,7 +7,6 @@ sgx.max_threads = 4
 # Whitelist ENV variables that get passed to the enclave
 # Using { passthrough = true } allows values to be passed in from the Satya node's /RunProof endpoint
 loader.env.SIGNED_MESSAGE = { passthrough = true }
-loader.env.URL = { passthrough = true }
 
 
 # Gramine gives a warning that allowed_files is not safe in production, but it

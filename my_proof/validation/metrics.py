@@ -45,7 +45,6 @@ def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
         'cookies': cookie_counts_list,
         'points': points
     }
-    print("calculated_metrics :",calculated_metrics)
     
     return calculated_metrics
 

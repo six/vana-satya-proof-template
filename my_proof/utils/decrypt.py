@@ -20,20 +20,11 @@ def decryptAESGCM(encrypted_data, symmetric_key, iv):
 
 # Main decryption function
 def decryptData(encrypted_data, iv, signed_message):
-    # Parse the encrypted data from the JSON format
-    print("inside decryptingData fct...")
-    # Decode the base64-encoded IV and encrypted data
     encrypted_data_bytes = base64.b64decode(encrypted_data)
     iv_bytes = base64.b64decode(iv)
     encryption_key_bytes = hashlib.sha256(bytes.fromhex(signed_message)).digest()
-    
-
-    # Decrypt the second layer data using AES-GCM
     decrypted_second_layer = decryptAESGCM(encrypted_data_bytes, encryption_key_bytes, iv_bytes)
-
-    # Decode the decrypted data from bytes to a string
     decrypted_data_str = decrypted_second_layer.decode('utf-8')
-    # Parse the decrypted data string into a Python dictionary
     decrypted_data = json.loads(decrypted_data_str)
     
     return decrypted_data
@@ -67,10 +58,4 @@ def verifyDataHash(decrypted_data, data_hash):
     computed_hash = computeSha256Hash(json_bytes)
     
     is_match = computed_hash == data_hash
-    if is_match:
-        print("Data hash matches.")
-    else:
-        print("Data hash does not match.")
-        print(f"Computed hash: {computed_hash}")
-        print(f"Provided hash: {data_hash}")
     return is_match
