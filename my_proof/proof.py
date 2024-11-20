@@ -3,6 +3,7 @@ import logging
 import os
 from typing import Dict, Any
 from eth_account import Account
+from eth_abi import encode
 from eth_account.messages import encode_defunct
 import base64
 from my_proof.utils.decrypt import decryptData, verifyDataHash
@@ -83,13 +84,15 @@ class Proof:
         proof_response.valid = (
             proof_response.ownership == 1.0 and proof_response.honesty and proof_response.score >= (constants.MODERATE_QUALITY_THRESHOLD/100)
         )
-        proof_response.metadata = {
-            'dlp_id': self.config['dlp_id'],
-            'label': label,
-            'points': recalculated_metrics.get('points', 0),
-            'cookies': sum(recalculated_metrics.get('cookies', [])),
-            }
-
+        proof_response.metadata = encode(
+            ['uint256', 'string', 'uint256', 'uint256'],  # Solidity types
+            [
+                self.config['dlp_id'],  # uint256
+                label,                 # string
+                recalculated_metrics.get('points', 0),  # uint256
+                sum(recalculated_metrics.get('cookies', [])),  # uint256
+            ]
+        ).hex() 
         return proof_response
     
     
