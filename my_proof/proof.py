@@ -88,7 +88,6 @@ class Proof:
             ['uint256', 'string', 'uint256', 'uint256'],  # Solidity types
             [
                 self.config['dlp_id'],  # uint256
-                label,                 # string
                 recalculated_metrics.get('points', 0),  # uint256
                 sum(recalculated_metrics.get('cookies', [])),  # uint256
             ]
