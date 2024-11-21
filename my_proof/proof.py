@@ -85,7 +85,7 @@ class Proof:
             proof_response.ownership == 1.0 and proof_response.honesty and proof_response.score >= (constants.MODERATE_QUALITY_THRESHOLD/100)
         )
         proof_response.metadata = encode(
-            ['uint256', 'string', 'uint256', 'uint256'],  # Solidity types
+            ['uint256', 'uint256', 'uint256'],  # Solidity types
             [
                 self.config['dlp_id'],  # uint256
                 recalculated_metrics.get('points', 0),  # uint256
