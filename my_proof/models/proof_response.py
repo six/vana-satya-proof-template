@@ -32,4 +32,3 @@ class ProofResponse(BaseModel):
     uniqueness: float = 0.0
     attributes: Optional[Dict[str, Any]] = {}
     metadata: Optional[Dict[str, Any]] = {}  # Human-readable metadata
-    encoded_metadata: Optional[str] = None  # ABI-encoded metadata
