@@ -77,29 +77,16 @@ class Proof:
         proof_response.authenticity = authenticity
         proof_response.attributes = {
             'label': label,
-            'points': recalculated_metrics.get('points', 0),
-            'cookies': sum(recalculated_metrics.get('cookies', [])),
         }
         proof_response.score = final_score  
         proof_response.valid = (
             proof_response.ownership == 1.0 and proof_response.honesty and proof_response.score >= (constants.MODERATE_QUALITY_THRESHOLD/100)
         )
         
-        
-        encoded_metadata = encode(
-            ['uint256', 'uint256', 'uint256'],  # Solidity types
-            [
-                self.config['dlp_id'],  # uint256
-                recalculated_metrics.get('points', 0),  # uint256
-                sum(recalculated_metrics.get('cookies', [])),  # uint256
-            ]
-        ).hex() 
-        
         proof_response.metadata = {
             'dlp_id': self.config['dlp_id'],
             'points': recalculated_metrics.get('points', 0),
-            'cookies': sum(recalculated_metrics.get('cookies', [])),
-            'encoded_metadata': encoded_metadata
+            'cookies': sum(recalculated_metrics.get('cookies', []))
         }
 
         return proof_response
