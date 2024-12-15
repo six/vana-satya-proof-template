@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO, format='%(message)s')
 def load_config() -> Dict[str, Any]:
     """Load proof configuration from environment variables."""
     config = {
-        'dlp_id': 1234,  # Set your own DLP ID here
+        'dlp_id': 10,  # Set your own DLP ID here
         'use_sealing': os.path.isdir(SEALED_DIR),
         'input_dir': INPUT_DIR,
         'signed_message': os.environ.get('SIGNED_MESSAGE', None),

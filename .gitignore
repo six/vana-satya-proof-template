@@ -7,3 +7,10 @@ demo/*
 !demo/input/
 
 .idea/
+
+bin/
+demo/
+lib/
+pyvenv.cfg
+
+.gitignore
