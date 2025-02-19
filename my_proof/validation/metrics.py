@@ -3,7 +3,7 @@ from typing import Dict
 
 import math
 
-EARLY_BONUS_MULTIPLIER = 6
+EARLY_BONUS_MULTIPLIER = 3
 
 def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
     encrypted_browsing_data_array = decrypted_data.get('browsingDataArray', [])

@@ -1,20 +1,19 @@
 # Time thresholds (in milliseconds)
 MIN_TIME_SPENT_MS = 2000          # Minimum time spent on a page (2 seconds)
-MAX_TIME_SPENT_MS = 7200000       # Maximum time spent on a page (2 hours)
+MAX_TIME_SPENT_MS = 1800000       # Maximum time spent on a page (30 mins)
 
 # Completeness
-REQUIRED_FIELDS = {'url', 'timeSpent', 'listOfActions'}
+REQUIRED_FIELDS = {'url', 'timeSpent'}
 
 # Authenticity thresholds
 LONG_DURATION_THRESHOLD_MS = 300000  # 5 minutes (300,000 ms) without actions
 
 # Scoring weights
-MAX_QUALITY_SCORE = 60
-MAX_AUTHENTICITY_SCORE = 40
+MAX_AUTHENTICITY_SCORE = 100
 
 # Labeling thresholds based on overall score
-HIGH_QUALITY_THRESHOLD = 80
-MODERATE_QUALITY_THRESHOLD = 20
+HIGH_AUTHENTICITY_THRESHOLD = 80
+MODERATE_AUTHENTICITY_THRESHOLD = 30
 
 # Sigmoid Function Parameters
 X0 = 0.5  # Midpoint of the sigmoid curve

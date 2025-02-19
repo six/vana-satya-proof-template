@@ -10,9 +10,8 @@ from my_proof.utils.decrypt import decryptData, verifyDataHash
 from my_proof.models.proof_response import ProofResponse
 from my_proof.utils.labeling import label_browsing_behavior
 from my_proof.validation.evaluations import (
-    evaluate_quality,
+    evaluate_correctness,
     evaluate_authenticity,
-    compute_overall_score,
     sigmoid,
 )
 from my_proof.validation.metrics import recalculate_evaluation_metrics, verify_evaluation_metrics
@@ -67,26 +66,25 @@ class Proof:
         proof_response.honesty = honesty and data_integrity
        # Evaluate browsing data
         evaluation_result = self.evaluate_browsing_data(input_data.get('data', {}))
-        quality = evaluation_result['quality_score']        # Raw quality score
+        correctness = evaluation_result['correctness']        # Raw correctness score
         authenticity = evaluation_result['authenticity_score']  # Raw authenticity score
-        final_score = evaluation_result['overall_score']      # Final score after sigmoid
+        final_score = authenticity 
         label = evaluation_result['label']
 
         # populate values
-        proof_response.quality = quality
+        proof_response.correctness = correctness
         proof_response.authenticity = authenticity
         proof_response.attributes = {
             'label': label,
         }
         proof_response.score = final_score  
         proof_response.valid = (
-            proof_response.ownership == 1.0 and proof_response.honesty and proof_response.score >= (constants.MODERATE_QUALITY_THRESHOLD/100)
+            proof_response.ownership == 1.0 and proof_response.honesty and proof_response.correctness and proof_response.score >= (constants.MODERATE_AUTHENTICITY_THRESHOLD/100)
         )
         
         proof_response.metadata = {
             'dlp_id': self.config['dlp_id'],
-            'points': recalculated_metrics.get('points', 0),
-            'cookies': sum(recalculated_metrics.get('cookies', []))
+            'invalid': proof_response.valid
         }
 
         return proof_response
@@ -132,18 +130,18 @@ class Proof:
     
 
     def evaluate_browsing_data(self, browsing_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Evaluate the browsing data for quality and authenticity."""
+        """Evaluate the browsing data for correctness and authenticity."""
         data_array = browsing_data.get("browsingDataArray", [])
-        quality = evaluate_quality(data_array)
+        correctness = evaluate_correctness(data_array)
         authenticity = evaluate_authenticity(data_array)
-        raw_score = compute_overall_score(quality, authenticity)
-        sigmoid_score = sigmoid(raw_score)
-        label = label_browsing_behavior(sigmoid_score)
+        sigmoid_score = sigmoid(authenticity)
+        # label = label_browsing_behavior(sigmoid_score)
+        label = label_browsing_behavior(authenticity)
 
         return {
-            'quality_score': round(quality, 2),
+            'correctness': correctness,
             'authenticity_score': round(authenticity, 2),
-            'overall_score': round(sigmoid_score, 2), 
+            'overall_score': round(authenticity, 2), 
             'label': label,
         }
 

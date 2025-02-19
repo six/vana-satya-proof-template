@@ -7,17 +7,17 @@ This repository serves as a template for creating a [proof of contribution](http
 This template provides a basic structure for building proof tasks that:
 
 1. Read input files from the `/input` directory.
-2. Process the data securely, running any necessary validations to prove the data authentic, unique, high quality, etc.
+2. Process the data securely, running any necessary validations to prove the data authentic, unique, high correctness, etc.
 3. Write proof results to the `/output/results.json` file in the following format:
 
 ```json
 {
   "dlp_id": 1234, // DLP ID is found in the Root Network contract after the DLP is registered
   "valid": false, // A single boolean to summarize if the file is considered valid in this DLP
+  "correctness": true, // Boolean to check the correctness of the provided file: if majority of the data contents isn't conform => False.
   "score": 0.7614457831325301, // A score between 0 and 1 for the file, used to determine how valuable the file is. This can be an aggregation of the individual scores below.
   "authenticity": 1.0, // A score between 0 and 1 to rate if the file has been tampered with
   "ownership": 1.0, // A score between 0 and 1 to verify the ownership of the file
-  "quality": 0.6024096385542169, // A score between 0 and 1 to show the quality of the file
   "uniqueness": 0, // A score between 0 and 1 to show unique the file is, compared to others in the DLP
   "attributes": { // Custom attributes that can be added to the proof to provide extra context about the encrypted file
     "total_score": 0.5,
