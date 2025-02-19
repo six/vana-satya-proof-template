@@ -16,7 +16,7 @@ This template provides a basic structure for building proof tasks that:
   "valid": false, // A single boolean to summarize if the file is considered valid in this DLP
   "correctness": true, // Boolean to check the correctness of the provided file: if majority of the data contents isn't conform => False.
   "score": 0.7614457831325301, // A score between 0 and 1 for the file, used to determine how valuable the file is. This can be an aggregation of the individual scores below.
-  "authenticity": 1.0, // A score between 0 and 1 to rate if the file has been tampered with
+  "quality": 1.0, // A score between 0 and 1 to rate if the file has been tampered with
   "ownership": 1.0, // A score between 0 and 1 to verify the ownership of the file
   "uniqueness": 0, // A score between 0 and 1 to show unique the file is, compared to others in the DLP
   "attributes": { // Custom attributes that can be added to the proof to provide extra context about the encrypted file

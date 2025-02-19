@@ -23,7 +23,6 @@ def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
         
     # Calculate points: (URL count + total actions) * 10 + total time spent + total cookies
     points = math.floor((url_count + total_time_spent/60) * EARLY_BONUS_MULTIPLIER)
-    print("points:",points)
     calculated_metrics = {
         'url_count': url_count,
         'timeSpent': time_spent_list,
@@ -42,5 +41,5 @@ def verify_evaluation_metrics(calculated_metrics: dict, given_metrics: dict) -> 
         calculated_metrics.get('timeSpent', []) == given_metrics.get('timeSpent', []) 
     )
     
-    authenticity = points_match and metrics_match
+    authenticity = 1.0 if points_match and metrics_match else 0.0
     return authenticity

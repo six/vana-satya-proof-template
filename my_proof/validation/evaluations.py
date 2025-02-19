@@ -77,7 +77,7 @@ def get_base_path(path):
     # Return the first token with a leading slash
     return f"/{tokens[0]}"
 
-def evaluate_authenticity(browsing_data):
+def evaluate_quality(browsing_data):
     """
     Evaluates how 'human-like' the session is with the new structure:
     [
@@ -97,11 +97,11 @@ def evaluate_authenticity(browsing_data):
       - Session segmentation by domain => check total timeSpent per domain
     """
 
-    authenticity_score = constants.MAX_AUTHENTICITY_SCORE  # e.g. 100
+    quality_score = constants.MAX_AUTHENTICITY_SCORE  # e.g. 100
     total_entries = len(browsing_data)
 
     if total_entries == 0:
-        return 0.0  # No data => cannot judge authenticity
+        return 0.0  # No data => cannot judge quality
 
     short_visits = 0
     long_visits = 0
@@ -156,13 +156,13 @@ def evaluate_authenticity(browsing_data):
     # (A) Short visit penalty
     # ------------------------
     short_visit_ratio = short_visits / total_entries
-    authenticity_score -= (short_visit_ratio * 20)
+    quality_score -= (short_visit_ratio * 20)
 
     # ------------------------
     # (B) Long visit penalty
     # ------------------------
     long_visit_ratio = long_visits / total_entries
-    authenticity_score -= (long_visit_ratio * 15)
+    quality_score -= (long_visit_ratio * 15)
 
     # -------------------------------------------------
     # (C) Domain continuity / sub-path continuity bonus
@@ -173,17 +173,17 @@ def evaluate_authenticity(browsing_data):
         continuity_ratio = 1 - (no_continuity_count / max_possible_changes)
         # If continuity_ratio is 0 => changed domain on *every* visit => suspicious
         if continuity_ratio == 0:
-            authenticity_score -= 10
+            quality_score -= 10
         else:
             # Higher domain continuity => slight reward
-            authenticity_score += continuity_ratio * 5
+            quality_score += continuity_ratio * 5
 
     # Additional small reward for sub-path continuity
     # e.g., if user visits 10 consecutive pages in same base path => sub_path_continuity_count=9 for those transitions
     if total_entries > 1:
         sub_path_ratio = sub_path_continuity_count / (total_entries - 1)
         # Reward it a bit more heavily if you want:
-        authenticity_score += (sub_path_ratio * 5)
+        quality_score += (sub_path_ratio * 5)
 
     # -----------------------------------------
     # (D) SLIDING WINDOW of size N (e.g., 5)
@@ -213,12 +213,12 @@ def evaluate_authenticity(browsing_data):
         # (D1) Domain correlation check
         # If the window has 5 distinct domains => suspicious domain-hopping
         if len(dset) == N:
-            authenticity_score -= 8  # or -10, your call
+            quality_score -= 8  # or -10, your call
 
         # (D2) Common pattern of extremely low timeSpent
         # If *all* timeSpent in that window < MIN_TIME_SPENT_MS => suspicious
         if all(ts < constants.MIN_TIME_SPENT_MS for ts in w_times):
-            authenticity_score -= 8
+            quality_score -= 8
 
     # --------------------------------
     # (E) Session timing pattern check
@@ -228,15 +228,15 @@ def evaluate_authenticity(browsing_data):
 
     # (E1) Extreme average penalty
     if mean_time < constants.MIN_TIME_SPENT_MS:
-        authenticity_score -= 10
+        quality_score -= 10
     if mean_time > constants.LONG_DURATION_THRESHOLD_MS:
-        authenticity_score -= 10
+        quality_score -= 10
 
     # (E2) Suspiciously low std dev => uniform times => penalize
     if mean_time > 0:
         stdev_ratio = stdev_time / mean_time
         if stdev_ratio < 0.1:
-            authenticity_score -= 5
+            quality_score -= 5
 
     # -----------------------------------
     # (F) Session Segmentation by Domain
@@ -278,10 +278,9 @@ def evaluate_authenticity(browsing_data):
     if len(domain_sections) > 1:
         times = [section["time_spent"] for section in domain_sections]
         if len(set(times)) == 1:
-            authenticity_score -= 10
+            quality_score -= 10
 
     # Ensure final is in [0..MAX_AUTHENTICITY_SCORE]
-    authenticity_score = max(min(authenticity_score, constants.MAX_AUTHENTICITY_SCORE), 0)
-    print("authenticity_score:",authenticity_score)
+    quality_score = max(min(quality_score, constants.MAX_AUTHENTICITY_SCORE), 0)
     # Normalize to [0..1]
-    return authenticity_score / 100
+    return quality_score / 100

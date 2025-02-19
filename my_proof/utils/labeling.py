@@ -7,6 +7,6 @@ def label_browsing_behavior(overall_score):
     if overall_score >= constants.HIGH_AUTHENTICITY_THRESHOLD:
         return "High Authentic Browsing"
     elif overall_score >= constants.MODERATE_AUTHENTICITY_THRESHOLD:
-        return "Moderate authenticity, Some traits of human browsing"
+        return "Moderate quality, Some traits of human browsing"
     else:
-        return "Low authenticity, Potentially Non-Human Browsing"
+        return "Low quality, Potentially Non-Human Browsing"
