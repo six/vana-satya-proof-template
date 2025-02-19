@@ -3,18 +3,14 @@ from typing import Dict
 
 import math
 
-EARLY_BONUS_MULTIPLIER = 6
+EARLY_BONUS_MULTIPLIER = 3
 
 def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
     encrypted_browsing_data_array = decrypted_data.get('browsingDataArray', [])
     
     url_count = len(encrypted_browsing_data_array)
     time_spent_list = []
-    action_counts_list = []
-    cookie_counts_list = []
-    total_actions = 0
     total_time_spent = 0  # In seconds
-    total_cookies = 0
     
     for entry in encrypted_browsing_data_array:
         # Handle time spent
@@ -24,25 +20,13 @@ def recalculate_evaluation_metrics(decrypted_data: dict) -> dict:
         time_spent_list.append(time_spent_sec_int)
         total_time_spent += time_spent_sec_int
         
-        # Handle actions
-        actions = entry.get('actions', {})
-        action_count = len(actions)
-        action_counts_list.append(action_count)
-        total_actions += action_count
         
-        # Handle cookies
-        cookies_count = entry.get('cookies', 0)
-        cookie_counts_list.append(cookies_count)
-        total_cookies += cookies_count
-    
     # Calculate points: (URL count + total actions) * 10 + total time spent + total cookies
-    points = math.floor(((url_count + total_actions) + total_time_spent/60) * EARLY_BONUS_MULTIPLIER)
-    
+    points = math.floor((url_count + total_time_spent/60) * EARLY_BONUS_MULTIPLIER)
+    print("points:",points)
     calculated_metrics = {
         'url_count': url_count,
         'timeSpent': time_spent_list,
-        'actions': action_counts_list,
-        'cookies': cookie_counts_list,
         'points': points
     }
     
@@ -55,9 +39,7 @@ def verify_evaluation_metrics(calculated_metrics: dict, given_metrics: dict) -> 
     
     metrics_match = (
         calculated_metrics.get('url_count', 0) == given_metrics.get('url_count', 0) and
-        calculated_metrics.get('timeSpent', []) == given_metrics.get('timeSpent', []) and
-        calculated_metrics.get('actions', []) == given_metrics.get('actions', []) and
-        calculated_metrics.get('cookies', []) == given_metrics.get('cookies', [])
+        calculated_metrics.get('timeSpent', []) == given_metrics.get('timeSpent', []) 
     )
     
     authenticity = points_match and metrics_match

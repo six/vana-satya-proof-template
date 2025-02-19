@@ -17,7 +17,7 @@ class ProofResponse(BaseModel):
         honesty: A single boolean to show if the points metrics were tampered with on the client side.
         authenticity: A score between 0 and 1 to rate if the file has been tampered with.
         ownership: A score between 0 and 1 to verify the ownership of the file.
-        quality: A score between 0 and 1 to show the quality of the file
+        correctness: A score between 0 and 1 to show the correctness of the file
         uniqueness: A score between 0 and 1 to show unique the file is, compared to others in the DLP.
         attributes: Custom attributes added to the proof to provide extra context about the encrypted file.
     """
@@ -25,10 +25,11 @@ class ProofResponse(BaseModel):
     dlp_id: int
     valid: bool = False
     honesty: bool = False
+    correctness: bool = False
+    integrity: bool = False
     score: float = 0.0
     authenticity: float = 0.0
     ownership: float = 0.0
-    quality: float = 0.0
     uniqueness: float = 0.0
     attributes: Optional[Dict[str, Any]] = {}
     metadata: Optional[Dict[str, Any]] = {}  # Human-readable metadata
