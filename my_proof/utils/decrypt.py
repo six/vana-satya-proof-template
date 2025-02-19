@@ -58,4 +58,5 @@ def verifyDataHash(decrypted_data, data_hash):
     computed_hash = computeSha256Hash(json_bytes)
     
     is_match = computed_hash == data_hash
+    print("is_match",is_match)
     return is_match

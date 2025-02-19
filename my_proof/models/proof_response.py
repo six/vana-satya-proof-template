@@ -26,6 +26,7 @@ class ProofResponse(BaseModel):
     valid: bool = False
     honesty: bool = False
     correctness: bool = False
+    integrity: bool = False
     score: float = 0.0
     authenticity: float = 0.0
     ownership: float = 0.0

@@ -282,6 +282,6 @@ def evaluate_authenticity(browsing_data):
 
     # Ensure final is in [0..MAX_AUTHENTICITY_SCORE]
     authenticity_score = max(min(authenticity_score, constants.MAX_AUTHENTICITY_SCORE), 0)
-
+    print("authenticity_score:",authenticity_score)
     # Normalize to [0..1]
     return authenticity_score / 100

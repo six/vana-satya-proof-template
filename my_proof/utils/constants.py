@@ -12,8 +12,8 @@ LONG_DURATION_THRESHOLD_MS = 300000  # 5 minutes (300,000 ms) without actions
 MAX_AUTHENTICITY_SCORE = 100
 
 # Labeling thresholds based on overall score
-HIGH_AUTHENTICITY_THRESHOLD = 80
-MODERATE_AUTHENTICITY_THRESHOLD = 30
+HIGH_AUTHENTICITY_THRESHOLD = 0.8
+MODERATE_AUTHENTICITY_THRESHOLD = 0.3
 
 # Sigmoid Function Parameters
 X0 = 0.5  # Midpoint of the sigmoid curve
