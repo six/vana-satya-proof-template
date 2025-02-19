@@ -13,7 +13,7 @@ MAX_AUTHENTICITY_SCORE = 100
 
 # Labeling thresholds based on overall score
 HIGH_AUTHENTICITY_THRESHOLD = 0.8
-MODERATE_AUTHENTICITY_THRESHOLD = 0.3
+MODERATE_AUTHENTICITY_THRESHOLD = 0.4
 
 # Sigmoid Function Parameters
 X0 = 0.5  # Midpoint of the sigmoid curve

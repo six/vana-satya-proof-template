@@ -85,7 +85,7 @@ class Proof:
         proof_response.metadata = {
             'dlp_id': self.config['dlp_id'],
             'valid': valid,
-            'quality': quality
+            'score': final_score
         }
 
         return proof_response
